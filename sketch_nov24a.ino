@@ -44,9 +44,9 @@ void setup() {
 
   // Print a welcome message to the LCD
   lcd.setCursor(0, 0); // Set the cursor to the first column and first row
-  lcd.print("Welcome to LCD");
+  lcd.print("Welcome to Locker");
   lcd.setCursor(0, 1); // Set the cursor to the first column and second row
-  lcd.print("Keypad Locker System");
+  lcd.print("Controlled System");
   lcd.setCursor(0, 2); // Set the cursor to the first column and second row
   lcd.print("(-_-)");
   lcd.setCursor(2, 3); // Set the cursor to the first column and second row
@@ -137,4 +137,44 @@ void sound_error(){
   digitalWrite(buzzerPin, HIGH);
   delay(100);
   digitalWrite(buzzerPin, LOW);
+}
+
+void master(){
+  Serial.println("Entering master mode...");
+  lcd.clear();
+
+  while(true){
+    char key = keypad.getKey();
+    int lockerKeyIndex = 0;
+    char lockerNumber[lockerKeyIndex];
+
+    lcd.setCursor(0, 0);
+    lcd.print("Press any number");
+    lcd.setCursor(0, 1);
+    lcd.print("[1 - 10]");
+
+    if(key){
+      if(key == 'D'){
+        lcd.clear();
+        loop();
+      }
+
+      else {
+        if(key == '#'){
+          if (atoi(lockerNumber) >= 1 && atoi(lockerNumber) <= 10) {
+            // Valid number pressed, perform actions if needed
+            Serial.print("You pressed: ");
+            Serial.println(lockerNumber);
+          } else {
+            sound_error();
+          }
+        }
+
+        else {
+          lockerNumber[lockerKeyIndex] = key;
+          lockerKeyIndex++;
+        }
+      }
+    }
+  }
 }
