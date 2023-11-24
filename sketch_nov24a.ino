@@ -1,6 +1,7 @@
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
 #include <Keypad.h>
+#include <Servo.h>
 
 const char master_password[] = "134679";
 const int ROWS = 4; //four rows
@@ -28,6 +29,9 @@ LiquidCrystal_I2C lcd(lcdAddress, lcdColumns, lcdRows);
 
 // buzzer
 const int buzzerPin = 4;
+
+// Servo
+Servo servo;
 
 void setup() {
   // Initialize buzzer
@@ -57,6 +61,10 @@ void setup() {
 
   // Clear the LCD
   lcd.clear();
+
+  // Initialize servo
+  servo.attach(14);
+  servo.write(0);
 
   Serial.begin(9600);
 }
@@ -150,7 +158,7 @@ void master(){
     char key = keypad.getKey();
 
     lcd.setCursor(0, 0);
-    lcd.print("Press any number");
+    lcd.print("Open locker?");
     lcd.setCursor(0, 1);
     lcd.print("[1 - 10]");
 
@@ -160,16 +168,22 @@ void master(){
         loop();
       }
 
+      else if(key == 'A') {
+        close_locker();
+      }
+
       else {
         if(key == '#'){
           lockerNumber[lockerKeyIndex] = '\0';  // Null-terminate the string
           int enteredNumber = atoi(lockerNumber);
-          Serial.println(enteredNumber);
 
           if (enteredNumber >= 1 && enteredNumber <= 10) {
             Serial.print("You pressed: ");
             Serial.println(enteredNumber);
             // Perform actions for valid number
+
+            open_locker(enteredNumber);
+
           } else {
             sound_error();
           }
@@ -188,4 +202,64 @@ void master(){
       }
     }
   }
+}
+
+void open_locker(int lockerNumber){
+  if(lockerNumber == 1){
+    servo.write(90);
+    delay(1000);
+  }
+}
+
+void close_locker(){
+  int lockerKeyIndex = 0;
+  char lockerNumber[lockerKeyIndex];
+
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Close locker?");
+  lcd.setCursor(0, 1);
+  lcd.print("[1 - 10]");
+
+  while(true) {
+    char key = keypad.getKey();
+
+    if(key) {
+      if(key == '#') {
+        lockerNumber[lockerKeyIndex] = '\0';  // Null-terminate the string
+        int enteredNumber = atoi(lockerNumber);
+
+        if (enteredNumber >= 1 && enteredNumber <= 10) {
+          Serial.print("You pressed: ");
+          Serial.println(enteredNumber);
+          // Perform actions for valid number
+
+          close_locker_servo(enteredNumber);
+
+        } else {
+          sound_error();
+        }
+
+        // Reset for the next input
+        lockerKeyIndex = 0;
+        memset(lockerNumber, 0, sizeof(lockerNumber));
+      }
+
+      else if(key == 'D') {
+        master();
+      }
+
+      else {
+        lockerNumber[lockerKeyIndex] = key;
+        lockerKeyIndex++;
+        lcd.setCursor(lockerKeyIndex - 1, 1);
+        lcd.print(key);
+      }
+    }
+  }
+}
+
+void close_locker_servo(int lockerNumber) {
+  servo.write(0);
+  delay(1000);
 }
