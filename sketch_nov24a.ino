@@ -89,7 +89,7 @@ void loop() {
           if (strncmp(passwords, master_password, keyIndex) == 0) {
             // Admin password entered successfully
             Serial.println("Admin access granted!");
-            // Add your admin-related actions here
+            master();
           } else {
             // Incorrect password
             sound_error();
@@ -143,10 +143,11 @@ void master(){
   Serial.println("Entering master mode...");
   lcd.clear();
 
+  int lockerKeyIndex = 0;
+  char lockerNumber[lockerKeyIndex];
+
   while(true){
     char key = keypad.getKey();
-    int lockerKeyIndex = 0;
-    char lockerNumber[lockerKeyIndex];
 
     lcd.setCursor(0, 0);
     lcd.print("Press any number");
@@ -161,18 +162,28 @@ void master(){
 
       else {
         if(key == '#'){
-          if (atoi(lockerNumber) >= 1 && atoi(lockerNumber) <= 10) {
-            // Valid number pressed, perform actions if needed
+          lockerNumber[lockerKeyIndex] = '\0';  // Null-terminate the string
+          int enteredNumber = atoi(lockerNumber);
+          Serial.println(enteredNumber);
+
+          if (enteredNumber >= 1 && enteredNumber <= 10) {
             Serial.print("You pressed: ");
-            Serial.println(lockerNumber);
+            Serial.println(enteredNumber);
+            // Perform actions for valid number
           } else {
             sound_error();
           }
+
+          // Reset for the next input
+          lockerKeyIndex = 0;
+          memset(lockerNumber, 0, sizeof(lockerNumber));
         }
 
         else {
           lockerNumber[lockerKeyIndex] = key;
           lockerKeyIndex++;
+          lcd.setCursor(lockerKeyIndex - 1, 1);
+          lcd.print(key);
         }
       }
     }
