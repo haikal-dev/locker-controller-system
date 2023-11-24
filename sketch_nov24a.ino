@@ -25,7 +25,13 @@ int lcdRows = 4;
 // Create an LCD object
 LiquidCrystal_I2C lcd(lcdAddress, lcdColumns, lcdRows);
 
+// buzzer
+const int buzzerPin = 4;
+
 void setup() {
+  // Initialize buzzer
+  pinMode(buzzerPin, OUTPUT);
+
   //Initialize the keypad
   Keypad keypad = Keypad(makeKeymap(keys), rowPins, colPins, ROWS, COLS);
 
@@ -94,7 +100,7 @@ void loop() {
           nextColumn++;
         }
       }
-      
+
       Serial.println();
     }
   }
