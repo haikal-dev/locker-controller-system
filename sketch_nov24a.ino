@@ -100,13 +100,18 @@ void loop() {
             master();
           } else {
             // Incorrect password
-            sound_error();
+            keyIndex = 0;
+            password_error();
           }
 
           // Clear the enteredKeys array after processing
           keyIndex = 0;
         }
-        // sound_error();
+
+        else {
+          keyIndex = 0;
+          password_error();
+        }
       }
 
       else {
@@ -130,6 +135,12 @@ void loop() {
       Serial.println();
     }
   }
+}
+
+void password_error() {
+  lcd.clear();
+  sound_error();
+  loop();
 }
 
 void lcd_show_keypad() {
