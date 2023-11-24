@@ -50,12 +50,17 @@ void setup() {
 
   // Clear the LCD
   lcd.clear();
+
+  Serial.begin(9600);
 }
 
 void loop() {
   lcd_show_keypad();
   
   int nextColumn = 0;
+  const int maxKeys = 7;
+  char passwords[maxKeys];
+  int keyIndex = 0;
 
   // always focus on keypad input
   while (true) {
@@ -67,16 +72,30 @@ void loop() {
       if(key == 'C') {
         lcd.clear();
         nextColumn = 0;
+        keyIndex = 0;
 
         lcd_show_keypad();
       }
 
       else {
         // display output on LCD
-        lcd.setCursor(nextColumn, 2);
-        lcd.print("*");
-        nextColumn++;
+        if (keyIndex < maxKeys - 1) {
+          // Store the key in the array
+          passwords[keyIndex] = key;
+          keyIndex++;
+
+          // Print the current state of the array to the Serial Monitor
+          for (int i = 0; i < keyIndex; i++) {
+            Serial.print(passwords[i]);
+          }
+
+          lcd.setCursor(nextColumn, 2);
+          lcd.print("*");
+          nextColumn++;
+        }
       }
+      
+      Serial.println();
     }
   }
 }
