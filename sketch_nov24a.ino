@@ -5,15 +5,15 @@
 int lcdAddress = 0x27;
 
 // Define LCD columns and rows
-int lcdColumns = 16;
-int lcdRows = 2;
+int lcdColumns = 20;
+int lcdRows = 4;
 
 // Create an LCD object
 LiquidCrystal_I2C lcd(lcdAddress, lcdColumns, lcdRows);
 
 void setup() {
   // Initialize the LCD
-  lcd.begin();
+  lcd.init();
 
   // Turn on the backlight (if available on your LCD module)
   lcd.backlight();
@@ -22,13 +22,17 @@ void setup() {
   lcd.setCursor(0, 0); // Set the cursor to the first column and first row
   lcd.print("Welcome to");
   lcd.setCursor(0, 1); // Set the cursor to the first column and second row
-  lcd.print("Arduino!");
+  lcd.print("LCD Keypad");
+  lcd.setCursor(0, 2); // Set the cursor to the first column and second row
+  lcd.print("Locker System");
+  lcd.setCursor(0, 3); // Set the cursor to the first column and second row
+  lcd.print("(-_-)");
 
   // Wait for a few seconds
-  delay(3000);
+  // delay(3000);
 
   // Clear the LCD
-  lcd.clear();
+  // lcd.clear();
 }
 
 void loop() {
