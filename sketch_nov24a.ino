@@ -2,6 +2,7 @@
 #include <LiquidCrystal_I2C.h>
 #include <Keypad.h>
 
+const char master_password[] = "134679";
 const int ROWS = 4; //four rows
 const int COLS = 4; //four columns
 char keys[ROWS][COLS] = {
@@ -63,7 +64,7 @@ void setup() {
 void loop() {
   lcd_show_keypad();
   
-  int nextColumn = 0;
+  int nextColumn = 7;
   const int maxKeys = 7;
   char passwords[maxKeys];
   int keyIndex = 0;
@@ -77,10 +78,27 @@ void loop() {
       // if user press 'C', then clear the password
       if(key == 'C') {
         lcd.clear();
-        nextColumn = 0;
+        nextColumn = 7;
         keyIndex = 0;
 
         lcd_show_keypad();
+      }
+
+      else if(key == '#'){
+        if (keyIndex == sizeof(master_password) - 1) {
+          if (strncmp(passwords, master_password, keyIndex) == 0) {
+            // Admin password entered successfully
+            Serial.println("Admin access granted!");
+            // Add your admin-related actions here
+          } else {
+            // Incorrect password
+            sound_error();
+          }
+
+          // Clear the enteredKeys array after processing
+          keyIndex = 0;
+        }
+        // sound_error();
       }
 
       else {
@@ -107,8 +125,16 @@ void loop() {
 }
 
 void lcd_show_keypad() {
-  lcd.setCursor(0, 0);
-  lcd.print("Please enter any");
-  lcd.setCursor(0, 1);
-  lcd.print("key:");
+  lcd.setCursor(2, 0);
+  lcd.print("Master Password:");
+}
+
+void sound_error(){
+  digitalWrite(buzzerPin, HIGH);
+  delay(100);
+  digitalWrite(buzzerPin, LOW);
+  delay(100);
+  digitalWrite(buzzerPin, HIGH);
+  delay(100);
+  digitalWrite(buzzerPin, LOW);
 }
