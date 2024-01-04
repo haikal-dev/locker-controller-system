@@ -30,12 +30,18 @@ LiquidCrystal_I2C lcd(lcdAddress, lcdColumns, lcdRows);
 // buzzer
 const int buzzerPin = 4;
 
+// LED 1
+const int LED1_Pin = 5;
+
 // Servo
 Servo servo;
 
 void setup() {
   // Initialize buzzer
   pinMode(buzzerPin, OUTPUT);
+
+  // Initialize LED1
+  pinMode(LED1_Pin, OUTPUT);
 
   //Initialize the keypad
   Keypad keypad = Keypad(makeKeymap(keys), rowPins, colPins, ROWS, COLS);
@@ -207,7 +213,7 @@ void master(){
         else {
           lockerNumber[lockerKeyIndex] = key;
           lockerKeyIndex++;
-          lcd.setCursor(lockerKeyIndex - 1, 1);
+          lcd.setCursor(lockerKeyIndex - 1, 2);
           lcd.print(key);
         }
       }
@@ -218,6 +224,7 @@ void master(){
 void open_locker(int lockerNumber){
   if(lockerNumber == 1){
     servo.write(90);
+    digitalWrite(LED1_Pin, HIGH);
     delay(1000);
   }
 }
@@ -263,7 +270,7 @@ void close_locker(){
       else {
         lockerNumber[lockerKeyIndex] = key;
         lockerKeyIndex++;
-        lcd.setCursor(lockerKeyIndex - 1, 1);
+        lcd.setCursor(lockerKeyIndex - 1, 2);
         lcd.print(key);
       }
     }
@@ -271,6 +278,9 @@ void close_locker(){
 }
 
 void close_locker_servo(int lockerNumber) {
-  servo.write(0);
-  delay(1000);
+  if(lockerNumber == 1) {
+    servo.write(0);
+    digitalWrite(LED1_Pin, LOW);
+    delay(1000);
+  }
 }
