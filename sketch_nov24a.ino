@@ -30,18 +30,21 @@ LiquidCrystal_I2C lcd(lcdAddress, lcdColumns, lcdRows);
 // buzzer
 const int buzzerPin = 4;
 
-// LED 1
+// LED
 const int LED1_Pin = 5;
+const int LED2_Pin = 3;
 
 // Servo
-Servo servo;
+Servo servo1;
+Servo servo2;
 
 void setup() {
   // Initialize buzzer
   pinMode(buzzerPin, OUTPUT);
 
-  // Initialize LED1
+  // Initialize LED
   pinMode(LED1_Pin, OUTPUT);
+  pinMode(LED2_Pin, OUTPUT);
 
   //Initialize the keypad
   Keypad keypad = Keypad(makeKeymap(keys), rowPins, colPins, ROWS, COLS);
@@ -69,8 +72,10 @@ void setup() {
   lcd.clear();
 
   // Initialize servo
-  servo.attach(14);
-  servo.write(0);
+  servo1.attach(14);
+  servo1.write(0);
+  servo2.attach(15);
+  servo2.write(0);
 
   Serial.begin(9600);
 }
@@ -223,8 +228,14 @@ void master(){
 
 void open_locker(int lockerNumber){
   if(lockerNumber == 1){
-    servo.write(90);
+    servo1.write(90);
     digitalWrite(LED1_Pin, HIGH);
+    delay(1000);
+  }
+
+  else if(lockerNumber == 2) {
+    servo2.write(90);
+    digitalWrite(LED2_Pin, HIGH);
     delay(1000);
   }
 }
@@ -279,8 +290,14 @@ void close_locker(){
 
 void close_locker_servo(int lockerNumber) {
   if(lockerNumber == 1) {
-    servo.write(0);
+    servo1.write(0);
     digitalWrite(LED1_Pin, LOW);
+    delay(1000);
+  }
+
+  else if(lockerNumber == 2) {
+    servo2.write(0);
+    digitalWrite(LED2_Pin, LOW);
     delay(1000);
   }
 }
