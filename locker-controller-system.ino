@@ -48,10 +48,12 @@ const int buzzerPin = 4;
 // LED Pin -> Arduino
 const int LED1_Pin = 5;
 const int LED2_Pin = 3;
+const int LED3_Pin = A2;
 
 // Servo Objek
 Servo servo1;
 Servo servo2;
+Servo servo3;
 
 void setup() {
   // Beritahu arduino yang kita set
@@ -62,6 +64,7 @@ void setup() {
   // Pin untuk LED sebagai output
   pinMode(LED1_Pin, OUTPUT);
   pinMode(LED2_Pin, OUTPUT);
+  pinMode(LED3_Pin, OUTPUT);
 
   // Declare objek 'keypad' ke arah Library Keypad
   Keypad keypad = Keypad(makeKeymap(keys), rowPins, colPins, ROWS, COLS);
@@ -101,6 +104,9 @@ void setup() {
 
   servo2.attach(15); // pin 15
   servo2.write(0); // angle 0
+
+  servo3.attach(A3); // pin A3
+  servo3.write(0); // angle 0
 
   Serial.begin(9600); // Mulakan Serial Debugging pada Serial Monitor
 }
@@ -337,6 +343,12 @@ void open_locker(int lockerNumber){
     digitalWrite(LED2_Pin, HIGH);
     delay(1000);
   }
+
+  else if(lockerNumber == 3) {
+    servo3.write(90);
+    digitalWrite(LED3_Pin, 255);
+    delay(1000);
+  }
 }
 
 // MOD CLOSE LOCKER
@@ -421,6 +433,12 @@ void close_locker_servo(int lockerNumber) {
   else if(lockerNumber == 2) {
     servo2.write(0);
     digitalWrite(LED2_Pin, LOW);
+    delay(1000);
+  }
+
+  else if(lockerNumber == 3) {
+    servo3.write(0);
+    digitalWrite(LED3_Pin, 0);
     delay(1000);
   }
 }
